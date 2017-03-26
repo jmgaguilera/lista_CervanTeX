@@ -64,9 +64,22 @@ def limpiar_mensaje(mensaje):
                     continue
         else:
             mayorque = 0
-        if re.match(r'^\-*$',linea) or \
+        if re.match(r'^\-*$',linea.strip()) or \
            re.match("Normas para el correcto uso del correo electrónico:", linea) or \
            re.match(r".*?http\:\/\/www\.rediris\.es\/mail\/estilo\.html.*", linea):
+            continue
+        encuentro = re.search(r'(.*?)<a href="(.*?)".*?>(.*?)</a>(.*?)', linea,
+                flags=re.MULTILINE | re.DOTALL)
+        if encuentro is not None:
+            linea = encuentro.group(1)+encuentro.group(2)+encuentro.group(4)
+        encuentro = re.search(r'(.*?)</cgi-bin/wa\?LOGON(.*?)', linea)
+        if encuentro is not None:
+            linea = encuentro.group(1)
+        encuentro = re.search(r'(.*?)/cgi-bin/wa\?LOGON(.*?)', linea)
+        if encuentro is not None:
+            linea = encuentro.group(1)
+        encuentro = re.search(r'Archivos de ES-TEX: http://listserv.rediris.es/archives/es-tex.html', linea)
+        if encuentro is not None:
             continue
         primero = False
         mens += linea+'\n'
